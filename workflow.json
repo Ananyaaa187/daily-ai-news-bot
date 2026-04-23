@@ -1,0 +1,136 @@
+{
+  "name": "Daily AI News Summary Bot",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "id": "aebda81e-2224-4c9e-ab7b-3a9f4f9ba5f1",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://newsapi.org/v2/top-headlines?category=technology&language=en&apiKey=39c3bbfe50a24de58a6739f610a8b3bc",
+        "options": {}
+      },
+      "id": "e49f0012-60db-4778-8980-519b99e0762d",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        224,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "field-title",
+              "name": "title",
+              "value": "={{ $json[\"articles\"][0][\"title\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "field-description",
+              "name": "description",
+              "value": "={{ $json[\"articles\"][0][\"description\"] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0bef1062-dc99-4016-b538-ec1cf5403cd8",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        448,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "1701712444",
+        "text": "=📰 Daily AI News:\n\nTitle: {{ $json[\"title\"] }}\nDescription: {{ $json[\"description\"] }}",
+        "additionalFields": {}
+      },
+      "id": "6ec3f218-e92b-4cd4-9ce9-721a44441f30",
+      "name": "Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        672,
+        0
+      ],
+      "webhookId": "407651ec-1ff1-4fe2-979e-0f245471feaa",
+      "credentials": {
+        "telegramApi": {
+          "id": "9AnCo9L6vctyQAVH",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "13eff3e8-9368-4711-8d9a-9d0b2dee91f4",
+  "meta": {
+    "instanceId": "e2338d6c1ebb563b2264171fcdf934bca6c2d7b14a5bfee4188fab5f90882bc9"
+  },
+  "id": "J03LxhDI33Ov2hIM",
+  "tags": []
+}
